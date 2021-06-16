@@ -1,0 +1,9 @@
+<idea-plugin>
+    <id>com.github.mikhirurg.intellijnews</id>
+    <name>IntelliJNews</name>
+    <vendor>mikhirurg</vendor>
+
+    <!-- Product and plugin compatibility requirements -->
+    <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+</idea-plugin>
