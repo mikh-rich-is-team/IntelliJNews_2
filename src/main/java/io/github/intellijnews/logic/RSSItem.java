@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -17,6 +17,6 @@ public class RSSItem {
     private final String author;
     private final List<String> category;
     private final String comments;
-    private final LocalDateTime pubDate;
+    private final Date pubDate;
     private RSSChannel channel;
 }
