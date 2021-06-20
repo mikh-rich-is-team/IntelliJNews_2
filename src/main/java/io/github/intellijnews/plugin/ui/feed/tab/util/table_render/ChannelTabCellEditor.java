@@ -7,5 +7,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ChannelTabCellEditor extends ComponentCellEditor {
+    private ChannelTab component;
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                                                 int row, int column) {
+        component = (ChannelTab) value;
+        return component;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        return component;
+    }
 
 }

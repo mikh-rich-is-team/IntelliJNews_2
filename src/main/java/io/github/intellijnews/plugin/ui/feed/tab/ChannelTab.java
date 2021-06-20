@@ -23,7 +23,48 @@ public class ChannelTab extends JPanel {
     }
 
     private void buildGui() {
+        setLayout(new BorderLayout());
 
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel info = new JPanel();
+        info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
+
+        JPanel channelInfo = new JPanel();
+        channelInfo.setLayout(new BorderLayout());
+        channelInfo.add(new ImagePanel(channel.getImage()), BorderLayout.WEST);
+
+        RSSTextPane title = new RSSTextPane(Settings.CHANNEL_NAME, channel.getTitle(),
+                "normal", "bold");
+        title.setFont(Settings.CHANNEL_NAME);
+        channelInfo.add(title, BorderLayout.NORTH);
+        RSSTextPane channelDescription = new RSSTextPane(Settings.CHANNEL_NAME,
+                channel.getDescription(), "italic", "normal");
+        channelInfo.add(channelDescription, BorderLayout.CENTER);
+
+        JPanel button = new JPanel();
+        button.setLayout(new BorderLayout());
+        JLabel label = new JLabel("...", JLabel.CENTER);
+        label.setFont(Settings.CHANNEL_NAME);
+        label.setPreferredSize(new Dimension(100, 100));
+        button.add(label, BorderLayout.CENTER);
+        button.setBackground(Settings.ITEM_BACKGROUND);
+        channelInfo.add(button, BorderLayout.EAST);
+
+        ChannelList.ChannelListMenu channelListMenu = new ChannelList.ChannelListMenu(application, channel);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                channelListMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        info.add(channelInfo);
+        mainPanel.add(info, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
     }
 
 }
