@@ -7,5 +7,12 @@ import java.awt.*;
 import java.util.List;
 
 public class ChannelTabTableModel extends ComponentTableModel {
+    public ChannelTabTableModel(List<Component> items) {
+        super(items, ChannelTab.class);
+    }
 
+    @Override
+    public String getColumnName(int columnIndex) {
+        return "Channels";
+    }
 }

@@ -9,7 +9,10 @@ import java.awt.*;
 public class ChannelTabCellRenderer extends JPanel implements TableCellRenderer {
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        return null;
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
+        ChannelTab component = (ChannelTab) value;
+        table.setRowHeight(row, Math.max(component.getPreferredSize().height + 20, 100));
+        return component;
     }
 }
