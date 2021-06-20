@@ -5,6 +5,8 @@ import io.github.intellijnews.logic.RSSChannel;
 import io.github.intellijnews.logic.RSSImage;
 import io.github.intellijnews.logic.RSSItem;
 import io.github.intellijnews.parser.headers.RSSChannelHeader;
+import io.github.intellijnews.parser.headers.RSSImageHeader;
+import io.github.intellijnews.parser.headers.RSSItemHeader;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -192,12 +194,118 @@ public class Parser {
     }
 
     private RSSImage parseImage(NodeList imageHeaders) {
-        return null;
+        String imageTitle = null;
+        String imageUrl = null;
+        String imageLink = null;
+        long width = -1;
+        long height = -1;
+        String imageDescription = null;
+
+        for (int i = 0; i < imageHeaders.getLength(); i++) {
+            RSSImageHeader imageHeader = RSSImageHeader.valueOfNodeName(imageHeaders.item(i)
+                    .getNodeName());
+            switch (imageHeader) {
+                case TITLE: {
+                    imageTitle = imageHeaders.item(i).getTextContent();
+                }
+                break;
+                case URL: {
+                    imageUrl = imageHeaders.item(i).getTextContent();
+                }
+                break;
+                case LINK: {
+                    imageLink = imageHeaders.item(i).getTextContent();
+                }
+                break;
+                case WIDTH: {
+                    width = Long.parseLong(imageHeaders.item(i).getTextContent());
+                }
+                break;
+                case HEIGHT: {
+                    height = Long.parseLong(imageHeaders.item(i).getTextContent());
+                }
+                break;
+                case DESCRIPTION: {
+                    imageDescription = imageHeaders.item(i).getTextContent();
+                }
+                break;
+                case UNKNOWN: {
+
+                }
+            }
+        }
+
+        return RSSImage.builder()
+                .title(imageTitle)
+                .url(imageUrl)
+                .link(imageLink)
+                .width(width)
+                .height(height)
+                .description(imageDescription)
+                .build();
     }
 
     private RSSItem parseItem(NodeList itemHeaders) {
         //TODO: парсим тег <item>
 
-        return null;
+        String itemTitle = null;
+        String itemLink = null;
+        String itemDescription = null;
+        String author = null;
+        List<String> itemCategory = new LinkedList<>();
+        String comments = null;
+        Date itemPubDate = null;
+
+        for (int i = 0; i < itemHeaders.getLength(); i++) {
+            RSSItemHeader itemHeader = RSSItemHeader.valueOfNodeName(itemHeaders.item(i)
+                    .getNodeName());
+            switch (itemHeader) {
+                case TITLE: {
+                    itemTitle = itemHeaders.item(i).getTextContent();
+                }
+                break;
+                case LINK: {
+                    itemLink = itemHeaders.item(i).getTextContent();
+                }
+                break;
+                case DESCRIPTION: {
+                    itemDescription = itemHeaders.item(i).getTextContent();
+                }
+                break;
+                case AUTHOR: {
+                    author = itemHeaders.item(i).getTextContent();
+                }
+                break;
+                case CATEGORY: {
+                    itemCategory.add(itemHeaders.item(i).getTextContent());
+                }
+                break;
+                case COMMENTS: {
+                    comments = itemHeaders.item(i).getTextContent();
+                }
+                break;
+                case PUB_DATE: {
+                    try {
+                        itemPubDate = DateParserUtils.parseDate(itemHeaders.item(i).getTextContent());
+                    } catch (Exception ignored) {
+                        itemPubDate = null;
+                    }
+                }
+                break;
+                case UNKNOWN: {
+
+                }
+            }
+        }
+
+        return RSSItem.builder()
+                .title(itemTitle)
+                .link(itemLink)
+                .description(itemDescription)
+                .author(author)
+                .category(itemCategory)
+                .comments(comments)
+                .pubDate(itemPubDate)
+                .build();
     }
 }
