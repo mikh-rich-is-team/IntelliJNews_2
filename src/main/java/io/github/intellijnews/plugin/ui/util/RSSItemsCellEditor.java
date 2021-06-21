@@ -11,7 +11,8 @@ public class RSSItemsCellEditor extends ComponentCellEditor {
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        return null;
+        panel = (ItemPanel) value;
+        return panel;
     }
 
     @Override
