@@ -90,5 +90,25 @@ public class ChannelList extends JPanel {
         content.setShowGrid(false);
         JScrollPane scrollPane = new JScrollPane(content);
         add(scrollPane, BorderLayout.CENTER);
+<<<<<<< HEAD
+=======
+    }
+
+    public static class ChannelListMenu extends JPopupMenu {
+        public ChannelListMenu(Application application, RSSChannel channel) {
+            JMenuItem unsubscribe = new JMenuItem("Unsubscribe");
+            JMenuItem openInWeb = new JMenuItem("Open in Browser");
+            add(unsubscribe);
+            add(openInWeb);
+
+            unsubscribe.addActionListener(e -> {
+                Settings.STORED_DATA.channels.remove(channel.getRssUrl());
+                application.updateData("Unsubscribing channel");
+                Settings.saveChannels();
+            });
+
+            openInWeb.addActionListener(e -> BrowserUtil.browse(channel.getLink()));
+        }
+>>>>>>> channellist-hotfix
     }
 }
