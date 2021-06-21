@@ -23,10 +23,36 @@ public class FeedPanel extends AbstractFeed {
     }
 
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
+        Parser parser = new Parser();
+        FeedPanel feedPanel = new FeedPanel(null,
+                RSSContainer.builder()
+                        .channels(List.of(
+                                parser.parse("https://rss.nytimes.com/services/xml/rss/nyt/US.xml"),
+                                parser.parse("https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml"),
+                                parser.parse("https://www.fontanka.ru/fontanka.rss"),
+                                parser.parse("https://meduza.io/rss2/all"),
+                                parser.parse("https://tvrain.ru/export/rss/all.xml"),
+                                parser.parse("http://feeds.bbci.co.uk/news/england/rss.xml")
+                        ))
+                        .build()
+        );
 
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame();
+            frame.setLayout(new BorderLayout());
+            frame.add(feedPanel, BorderLayout.CENTER);
+            frame.pack();
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
     }
 
     public static List<RSSItem> getFeedItems(RSSContainer rssContainer) {
-        return null;
+        return rssContainer.getChannels()
+                .stream()
+                .map(RSSChannel::getItems)
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(RSSItem::getPubDate).reversed())
+                .collect(Collectors.toList());
     }
 }
