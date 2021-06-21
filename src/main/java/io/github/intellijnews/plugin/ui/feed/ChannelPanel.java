@@ -16,6 +16,17 @@ public class ChannelPanel extends AbstractFeed {
     }
 
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
+        Parser parser = new Parser();
+        ChannelPanel channel = new ChannelPanel(null,
+                parser.parse("https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml"));
 
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame();
+            frame.setLayout(new BorderLayout());
+            frame.add(channel, BorderLayout.CENTER);
+            frame.pack();
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
     }
 }
