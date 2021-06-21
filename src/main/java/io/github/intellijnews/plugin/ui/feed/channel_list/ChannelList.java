@@ -8,9 +8,9 @@ import io.github.intellijnews.logic.RSSContainer;
 import io.github.intellijnews.plugin.ui.Application;
 import io.github.intellijnews.plugin.ui.Settings;
 import io.github.intellijnews.plugin.ui.feed.tab.ChannelTab;
-import io.github.intellijnews.plugin.ui.feed.tab.table_render.ChannelTabCellEditor;
-import io.github.intellijnews.plugin.ui.feed.tab.table_render.ChannelTabCellRenderer;
-import io.github.intellijnews.plugin.ui.feed.tab.table_render.ChannelTabTableModel;
+import io.github.intellijnews.plugin.ui.feed.tab.util.table_render.ChannelTabCellEditor;
+import io.github.intellijnews.plugin.ui.feed.tab.util.table_render.ChannelTabCellRenderer;
+import io.github.intellijnews.plugin.ui.feed.tab.util.table_render.ChannelTabTableModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
