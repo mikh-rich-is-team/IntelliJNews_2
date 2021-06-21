@@ -1,5 +1,6 @@
 package io.github.intellijnews.plugin.ui;
 
+import com.github.sisyphsu.dateparser.DateParserUtils;
 import com.intellij.openapi.project.Project;
 import io.github.intellijnews.logic.RSSChannel;
 import io.github.intellijnews.logic.RSSContainer;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -30,15 +32,67 @@ public class Application extends JPanel {
     }
 
     private void buildGui() {
+        setLayout(new BorderLayout());
 
+        JTabbedPane pane = new JTabbedPane();
+
+        feed = new FeedPanel(this, container);
+        channelList = new ChannelList(this, container);
+
+        JPanel feedPanel = new JPanel();
+        feedPanel.setLayout(new BorderLayout());
+        feedPanel.add(feed, BorderLayout.CENTER);
+        JButton refresh = new JButton("Refresh");
+        refresh.addActionListener(e -> updateData("Updating data"));
+        feedPanel.add(refresh, BorderLayout.NORTH);
+
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BorderLayout());
+        listPanel.add(channelList, BorderLayout.CENTER);
+        JButton add = new JButton("+");
+        add.addActionListener(e -> {
+            String url = JOptionPane.showInputDialog("Enter RSS Channel URL: ");
+            if (url != null) {
+                Settings.STORED_DATA.channels.add(url);
+                Settings.saveChannels();
+                updateData("Subscribing channel");
+            }
+        });
+        listPanel.add(add, BorderLayout.NORTH);
+
+        pane.addTab("Feed", feedPanel);
+        pane.addTab("Channels", listPanel);
+        add(pane, BorderLayout.CENTER);
     }
 
     public RSSContainer getContainer() {
-        return null;
+        return RSSContainer.builder()
+                .channels(Settings.STORED_DATA.channels.stream()
+                        .map(channel -> {
+                            try {
+                                RSSChannel rssChannel = parser.parse(channel);
+                                if (rssChannel == null) {
+                                    return null;
+                                }
+                                if (rssChannel.getItems().size() > 0) {
+                                    rssChannel.getItems().removeIf(item -> item.getPubDate() == null);
+                                }
+                                return rssChannel;
+                            } catch (IOException | SAXException ignored) {
+                                // TODO: add logging
+                            }
+                            return null;
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())
+                )
+                .build();
     }
 
     public void updateData(String title) {
-
+        container = getContainer();
+        feed.setItems(FeedPanel.getFeedItems(container));
+        channelList.setItems(title, container);
     }
 
     public static void main(String[] args) {
