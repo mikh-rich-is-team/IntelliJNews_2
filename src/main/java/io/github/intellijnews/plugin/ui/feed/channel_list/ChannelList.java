@@ -90,8 +90,6 @@ public class ChannelList extends JPanel {
         content.setShowGrid(false);
         JScrollPane scrollPane = new JScrollPane(content);
         add(scrollPane, BorderLayout.CENTER);
-<<<<<<< HEAD
-=======
     }
 
     public static class ChannelListMenu extends JPopupMenu {
@@ -109,6 +107,5 @@ public class ChannelList extends JPanel {
 
             openInWeb.addActionListener(e -> BrowserUtil.browse(channel.getLink()));
         }
->>>>>>> channellist-hotfix
     }
 }
