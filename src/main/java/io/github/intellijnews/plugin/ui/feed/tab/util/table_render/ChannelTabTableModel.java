@@ -1,0 +1,11 @@
+package io.github.intellijnews.plugin.ui.feed.tab.util.table_render;
+
+import io.github.intellijnews.plugin.ui.feed.tab.ChannelTab;
+import io.github.intellijnews.plugin.ui.util.ComponentTableModel;
+
+import java.awt.*;
+import java.util.List;
+
+public class ChannelTabTableModel extends ComponentTableModel {
+
+}
