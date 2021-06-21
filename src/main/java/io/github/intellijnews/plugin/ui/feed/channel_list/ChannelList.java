@@ -32,31 +32,63 @@ public class ChannelList extends JPanel {
     }
 
     private void buildGui() {
+        setLayout(new BorderLayout());
+        List<Component> channelTabs = new LinkedList<>();
+        for (RSSChannel channel : container.getChannels()) {
+            ChannelTab channelTab = new ChannelTab(application, channel);
+            channelTabs.add(channelTab);
+        }
 
+        model = new ChannelTabTableModel(channelTabs);
+        createContent();
     }
 
     public void setItems(String title, RSSContainer container) {
+        this.container = container;
+        final ChannelTabTableModel[] newModel = new ChannelTabTableModel[1];
+        final Task.Backgroundable backgroundTask = new Task.Backgroundable(application.getProject(),
+                title) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                indicator.setText(title);
+                newModel[0] = new ChannelTabTableModel(container.getChannels().stream()
+                        .map(e -> new ChannelTab(application, e)).collect(Collectors.toList()));
+                SwingUtilities.invokeLater(() -> {
+                    removeAll();
+                    model = newModel[0];
+                    createContent();
+                    validate();
+                });
+            }
+        };
+        backgroundTask.queue();
+        /*SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() {
+                newModel[0] = new ChannelTabTableModel(container.getChannels().stream()
+                        .map(e -> new ChannelTab(application, e)).collect(Collectors.toList()));
+                return true;
+            }
 
+            @Override
+            protected void done() {
+                removeAll();
+                model = newModel[0];
+                createContent();
+                validate();
+            }
+        };
+        worker.execute();*/
     }
 
     private void createContent() {
-
+        JTable content = new JTable(model);
+        content.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        content.setDefaultRenderer(ChannelTab.class, new ChannelTabCellRenderer());
+        content.setDefaultEditor(ChannelTab.class, new ChannelTabCellEditor());
+        content.setIntercellSpacing(new Dimension(20, 20));
+        content.setShowGrid(false);
+        JScrollPane scrollPane = new JScrollPane(content);
+        add(scrollPane, BorderLayout.CENTER);
     }
-    public static class ChannelListMenu extends JPopupMenu {
-        public ChannelListMenu(Application application, RSSChannel channel) {
-            JMenuItem unsubscribe = new JMenuItem("Unsubscribe");
-            JMenuItem openInWeb = new JMenuItem("Open in Browser");
-            add(unsubscribe);
-            add(openInWeb);
-
-            unsubscribe.addActionListener(e -> {
-                Settings.STORED_DATA.channels.remove(channel.getRssUrl());
-                application.updateData("Unsubscribing channel");
-                Settings.saveChannels();
-            });
-
-            openInWeb.addActionListener(e -> BrowserUtil.browse(channel.getLink()));
-        }
-    }
-
 }
