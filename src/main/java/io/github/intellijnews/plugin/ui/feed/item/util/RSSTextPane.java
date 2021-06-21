@@ -9,6 +9,22 @@ import java.awt.*;
 
 public class RSSTextPane extends JEditorPane {
     public RSSTextPane(Font font, String text, String style, String weight) {
+        setContentType("text/html");
+        setText("<html><body style=\"font-family: " +
+                font.getFamily() + "; " +
+                "font-style: " + style + "; " +
+                "font-size: " + font.getSize() + "pt; " +
+                "font-weight: " + weight + "\">" +
+                text +
+                "</body></html>");
+        setEditable(false);
+        setBackground(Settings.ITEM_BACKGROUND);
+
+        addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                BrowserUtil.browse(e.getURL());
+            }
+        });
 
     }
 }

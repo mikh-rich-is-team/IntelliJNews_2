@@ -8,19 +8,22 @@ import java.util.EventObject;
 
 public class ComponentCellEditor implements TableCellEditor {
 
+    private Component component;
+
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        return null;
+        component = (Component) value;
+        return component;
     }
 
     @Override
     public Object getCellEditorValue() {
-        return null;
+        return component;
     }
 
     @Override
     public boolean isCellEditable(EventObject anEvent) {
-        return false;
+        return true;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class ComponentCellEditor implements TableCellEditor {
 
     @Override
     public boolean stopCellEditing() {
-        return false;
+        return true;
     }
 
     @Override
