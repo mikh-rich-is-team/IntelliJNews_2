@@ -17,11 +17,41 @@ public class Settings {
     public static State STORED_DATA;
 
     static {
-
+        STORED_DATA = new State();
+        String dir = System.getProperty("user.home");
+        Path path = Path.of(dir).resolve("RSSReader/channels");
+        if (Files.exists(path)) {
+            try {
+                STORED_DATA.load(new FileInputStream(path.toFile()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Files.createDirectory(Path.of(dir).resolve("RSSReader"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void saveChannels() {
+        String dir = System.getProperty("user.home");
+        Path path = Path.of(dir).resolve("RSSReader/channels");
 
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectory(Path.of(dir).resolve("RSSReader"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            STORED_DATA.save(new FileOutputStream(path.toFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -30,11 +60,22 @@ public class Settings {
         public Set<String> channels = new LinkedHashSet<>();
 
         public void load(InputStream stream) throws IOException {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    channels.add(line);
+                }
+            }
 
         }
 
         public void save(OutputStream outputStream) throws IOException {
-
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
+                for (String line : channels) {
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
         }
     }
 }
